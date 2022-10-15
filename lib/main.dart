@@ -1,10 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-
+import 'package:my_app/verifyemailview.dart';
+import 'package:my_app/views/loginview.dart';
+import 'package:my_app/views/registerview.dart';
 import 'firebase_options.dart';
-// import 'package:my_app/views/loginview.dart';
-// import 'package:my_app/views/registerview.dart';
 
 void main() {
   runApp(
@@ -14,6 +14,10 @@ void main() {
         primarySwatch: Colors.blue,
       ),
       home: const HomePage(),
+      routes: {
+        '/login/': (context) => const LoginView(),
+        '/register/': (context) => const RegisterView(),
+      },
     ),
   );
 }
@@ -23,28 +27,26 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('The Chairman - SMU'),
-      ),
-      body: FutureBuilder(
-          future: Firebase.initializeApp(
-            options: DefaultFirebaseOptions.currentPlatform,
-          ),
-          builder: (context, snapshot) {
-            switch (snapshot.connectionState) {
-              case ConnectionState.done:
-                final user = FirebaseAuth.instance.currentUser;
-                if (user?.emailVerified ?? false) {
-                  print('You are good to go');
+    return FutureBuilder(
+        future: Firebase.initializeApp(
+          options: DefaultFirebaseOptions.currentPlatform,
+        ),
+        builder: (context, snapshot) {
+          switch (snapshot.connectionState) {
+            case ConnectionState.done:
+              final user = FirebaseAuth.instance.currentUser;
+              if (user != null) {
+                if (!user.emailVerified) {
+                  return const VerifyEmailView();
                 } else {
-                  print('Theeeiiiff');
+                  return const Text('Why are you here');
                 }
-                return const Text('Done');
-              default:
-                return const Text('Loading ...');
-            }
-          }),
-    );
+              } else {
+                return const LoginView();
+              }
+            default:
+              return const CircularProgressIndicator();
+          }
+        });
   }
 }
