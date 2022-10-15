@@ -1,7 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:my_app/verifyemailview.dart';
+import 'package:my_app/views/mainview.dart';
+import 'package:my_app/views/verifyemailview.dart';
 import 'package:my_app/views/loginview.dart';
 import 'package:my_app/views/registerview.dart';
 import 'firebase_options.dart';
@@ -39,7 +40,7 @@ class HomePage extends StatelessWidget {
                 if (!user.emailVerified) {
                   return const VerifyEmailView();
                 } else {
-                  return const Text('Why are you here');
+                  return const MainView();
                 }
               } else {
                 return const LoginView();
