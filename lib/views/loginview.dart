@@ -1,8 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:my_app/constants/routes.dart';
+import 'package:my_app/utils/errordialog.dart';
 import '../firebase_options.dart';
-import "dart:developer" show log;
 
 class LoginView extends StatefulWidget {
   const LoginView({Key? key}) : super(key: key);
@@ -70,13 +71,20 @@ class _LoginViewState extends State<LoginView> {
                             email: email,
                             password: pass,
                           );
-                          Navigator.of(context).pushNamedAndRemoveUntil(
-                            '/main/',
-                            (route) => false,
-                          );
+                          final user = FirebaseAuth.instance.currentUser;
+                          if (user?.emailVerified ?? false) {
+                            Navigator.of(context).pushNamedAndRemoveUntil(
+                              mainRoute,
+                              (route) => false,
+                            );
+                          } else {
+                            await showialogError(
+                                context, "Please Verify Email First");
+                          }
                         } on FirebaseAuthException catch (e) {
-                          log('Not Registered');
-                          log(e.code);
+                          await showialogError(context, e.code);
+                        } catch (e) {
+                          await showialogError(context, e.toString());
                         }
                       },
                       child: const Text('Login'),
@@ -84,7 +92,7 @@ class _LoginViewState extends State<LoginView> {
                     TextButton(
                       onPressed: () {
                         Navigator.of(context).pushNamedAndRemoveUntil(
-                          '/register/',
+                          registerRoute,
                           (route) => false,
                         );
                       },

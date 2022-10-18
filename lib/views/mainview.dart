@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:my_app/constants/routes.dart';
 
 enum MenuAction { logout }
 
@@ -23,7 +24,7 @@ class _MainViewState extends State<MainView> {
               if (shouldLogout) {
                 await FirebaseAuth.instance.signOut();
                 Navigator.of(context).pushNamedAndRemoveUntil(
-                  '/login/',
+                  loginRoute,
                   (_) => false,
                 );
               }

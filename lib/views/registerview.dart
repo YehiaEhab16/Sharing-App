@@ -1,7 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-
+import 'package:my_app/constants/routes.dart';
+import 'package:my_app/utils/errordialog.dart';
 import '../firebase_options.dart';
 
 class RegisterView extends StatefulWidget {
@@ -68,9 +69,13 @@ class _RegisterViewState extends State<RegisterView> {
                           await FirebaseAuth.instance
                               .createUserWithEmailAndPassword(
                                   email: email, password: pass);
+                          final user = FirebaseAuth.instance.currentUser;
+                          user?.sendEmailVerification();
+                          Navigator.of(context).pushNamed(verifyRoute);
                         } on FirebaseAuthException catch (e) {
-                          print('Erroooooooor');
-                          print(e.code);
+                          await showialogError(context, e.code);
+                        } catch (e) {
+                          await showialogError(context, e.toString());
                         }
                       },
                       child: const Text('Register'),
@@ -78,7 +83,7 @@ class _RegisterViewState extends State<RegisterView> {
                     TextButton(
                       onPressed: () async {
                         Navigator.of(context).pushNamedAndRemoveUntil(
-                          '/login/',
+                          loginRoute,
                           (route) => false,
                         );
                       },
