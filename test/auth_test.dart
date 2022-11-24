@@ -1,6 +1,6 @@
-import 'package:my_app/services/auth_exceptions.dart';
-import 'package:my_app/services/auth_provider.dart';
-import 'package:my_app/services/auth_user.dart';
+import 'package:my_app/services/auth/auth_exceptions.dart';
+import 'package:my_app/services/auth/auth_provider.dart';
+import 'package:my_app/services/auth/auth_user.dart';
 import 'package:test/test.dart';
 
 void main() {
