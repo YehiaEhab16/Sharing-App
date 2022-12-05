@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:my_app/constants/routes.dart';
 import 'package:my_app/enums/menu_action.dart';
 import 'package:my_app/services/auth/auth_service.dart';
+import 'package:my_app/services/crud/notes_service.dart';
 
 class MainView extends StatefulWidget {
   const MainView({Key? key}) : super(key: key);
@@ -11,12 +12,34 @@ class MainView extends StatefulWidget {
 }
 
 class _MainViewState extends State<MainView> {
+  late final NotesService _notesService;
+  String get userEmail => AuthService.firebase().currentUser!.email!;
+
+  @override
+  void initState() {
+    _notesService = NotesService();
+    _notesService.open();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _notesService.close();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('The Chairman - SMU'),
         actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.of(context).pushNamed(newRoute);
+            },
+            icon: const Icon(Icons.add),
+          ),
           PopupMenuButton<MenuAction>(onSelected: (value) async {
             if (value == MenuAction.logout) {
               final shouldLogout = await showLogOutDialog(context);
@@ -38,7 +61,26 @@ class _MainViewState extends State<MainView> {
           })
         ],
       ),
-      body: const Text('Main UI'),
+      body: FutureBuilder(
+        future: _notesService.getorCreateUser(email: userEmail),
+        builder: (context, snapshot) {
+          switch (snapshot.connectionState) {
+            case ConnectionState.done:
+              return StreamBuilder(
+                  stream: _notesService.allNotes,
+                  builder: (context, snapshot) {
+                    switch (snapshot.connectionState) {
+                      case ConnectionState.waiting:
+                        return const Text('Waiting  for notes');
+                      default:
+                        return const CircularProgressIndicator();
+                    }
+                  });
+            default:
+              return const CircularProgressIndicator();
+          }
+        },
+      ),
     );
   }
 }
