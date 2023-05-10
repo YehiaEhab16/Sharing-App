@@ -1,8 +1,8 @@
 import 'package:my_app/services/auth/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:my_app/constants/routes.dart';
-import 'package:my_app/views/mainview.dart';
-import 'package:my_app/views/newview.dart';
+import 'package:my_app/views/notes/mainview.dart';
+import 'package:my_app/views/notes/newview.dart';
 import 'package:my_app/views/verifyemailview.dart';
 import 'package:my_app/views/loginview.dart';
 import 'package:my_app/views/registerview.dart';

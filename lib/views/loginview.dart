@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:my_app/constants/routes.dart';
 import 'package:my_app/services/auth/auth_exceptions.dart';
-import 'package:my_app/utils/errordialog.dart';
 import 'package:my_app/services/auth/auth_service.dart';
+import 'package:my_app/utils/dialogs/errordialog.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({Key? key}) : super(key: key);
@@ -69,15 +69,15 @@ class _LoginViewState extends State<LoginView> {
                       (route) => false,
                     );
                   } else {
-                    await showialogError(context, "Please Verify Email First");
+                    await showErrorDialog(context, "Please Verify Email First");
                   }
                 } on WrongPasswordAuthException {
-                  await showialogError(context, 'Invalid Password. Try Again');
+                  await showErrorDialog(context, 'Invalid Password. Try Again');
                 } on UserNotFoundAuthException {
-                  await showialogError(
+                  await showErrorDialog(
                       context, 'User Not Found. Register First');
                 } on GenericAuthException {
-                  await showialogError(context, 'Authentication Error');
+                  await showErrorDialog(context, 'Authentication Error');
                 }
               },
               child: const Text('Login'),
